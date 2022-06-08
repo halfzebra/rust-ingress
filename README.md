@@ -1,6 +1,13 @@
 # 🚶🚶🚶 rust-ingress
 
 This is a POC for ingress solution using Apache Kafka with two services for [ingressing](./ingress/) ang [storing](./worker/) messages into Postgres.
+The code is a happy-path spagetti to test whether this is even going to work.
+
+## Running
+
+```bash
+docker-compose up
+```
 
 ## Why Apache Kafka?
 
@@ -16,6 +23,3 @@ The [ingres](./ingress/) service is using relatively new [tokio-rs/axum](https:/
 ## Why Dockerfile is so complicated?
 
 It contains a build optimization from [Packaging a Rust web service using Docker](https://blog.logrocket.com/packaging-a-rust-web-service-using-docker/)
-
-- [fede1024/rust-rdkafka](https://github.com/fede1024/rust-rdkafka)
-- [fede1024/kafka-benchmark](https://github.com/fede1024/kafka-benchmark)
