@@ -14,16 +14,17 @@ use std::net::SocketAddr;
 use std::time::Duration;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 use validator::{Validate, ValidationError};
+
 #[tokio::main]
 async fn main() {
+    let kafka_host = std::env::var("KAFKA_HOST").unwrap_or_else(|_| "localhost".into());
+
     tracing_subscriber::registry()
         .with(tracing_subscriber::EnvFilter::new(
             std::env::var("RUST_LOG").unwrap_or_else(|_| "ingress=trace".into()),
         ))
         .with(tracing_subscriber::fmt::layer())
         .init();
-
-    let kafka_host = std::env::var("kafka_host").unwrap_or_else(|_| "localhost".into());
 
     tracing::debug!("Using kafka_host {}", &kafka_host);
 
