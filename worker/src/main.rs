@@ -3,10 +3,18 @@ use rdkafka::consumer::stream_consumer::StreamConsumer;
 use rdkafka::consumer::{CommitMode, Consumer};
 use rdkafka::message::Message;
 use tokio_postgres::NoTls;
+use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 #[tokio::main]
 async fn main() {
-    println!("Worker started");
+    tracing_subscriber::registry()
+        .with(tracing_subscriber::EnvFilter::new(
+            std::env::var("RUST_LOG").unwrap_or_else(|_| "ingress=trace,tower_http=trace".into()),
+        ))
+        .with(tracing_subscriber::fmt::layer())
+        .init();
+
+    tracing::debug!("Worker started");
 
     let (client, connection) = tokio_postgres::connect(
         &format!(
@@ -20,7 +28,7 @@ async fn main() {
 
     tokio::spawn(async move {
         if let Err(e) = connection.await {
-            eprintln!("connection error: {}", e);
+            tracing::error!("connection error: {}", e);
             std::process::exit(1);
         }
     });
@@ -45,20 +53,16 @@ async fn main() {
 
     loop {
         match consumer.recv().await {
-            Err(e) => {
-                dbg!("Kafka error: {}", e);
-            }
+            Err(e) => tracing::error!("Kafka error: {}", e),
             Ok(m) => {
                 let payload = match m.payload_view::<str>() {
                     None => "",
                     Some(Ok(s)) => s,
                     Some(Err(e)) => {
-                        dbg!("Error while deserializing message payload: {:?}", e);
+                        tracing::error!("Error while deserializing message payload: {:?}", e);
                         ""
                     }
                 };
-                // dbg!("key: '{:?}', payload: '{}', topic: {}, partition: {}, offset: {}, timestamp: {:?}",
-                //           m.key(), payload, m.topic(), m.partition(), m.offset(), m.timestamp());
 
                 let v: serde_json::Value = serde_json::from_str(payload).unwrap();
 
@@ -66,9 +70,12 @@ async fn main() {
                     .query("INSERT INTO messages (payload) VALUES ($1)", &[&v])
                     .await;
 
-                // dbg!(rows);
+                tracing::debug!("{:?}", res);
 
-                consumer.commit_message(&m, CommitMode::Async).unwrap();
+                match consumer.commit_message(&m, CommitMode::Async) {
+                    Ok(_) => tracing::debug!("Mesagge committed"),
+                    Err(e) => tracing::error!("Failed to commit {}", e),
+                };
             }
         };
     }

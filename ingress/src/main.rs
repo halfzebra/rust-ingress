@@ -18,19 +18,17 @@ use validator::{Validate, ValidationError};
 async fn main() {
     tracing_subscriber::registry()
         .with(tracing_subscriber::EnvFilter::new(
-            std::env::var("RUST_LOG").unwrap_or_else(|_| "ingress=trace,tower_http=trace".into()),
+            std::env::var("RUST_LOG").unwrap_or_else(|_| "ingress=trace".into()),
         ))
         .with(tracing_subscriber::fmt::layer())
         .init();
 
+    let kafka_host = std::env::var("kafka_host").unwrap_or_else(|_| "localhost".into());
+
+    tracing::debug!("Using kafka_host {}", &kafka_host);
+
     let producer: FutureProducer = ClientConfig::new()
-        .set(
-            "bootstrap.servers",
-            format!(
-                "{}:29092",
-                std::env::var("KAFKA_HOST").unwrap_or_else(|_| "localhost".into())
-            ),
-        )
+        .set("bootstrap.servers", format!("{}:29092", kafka_host))
         .set("message.timeout.ms", "5000")
         .create()
         .expect("Producer creation error");
