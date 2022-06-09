@@ -14,3 +14,6 @@ tracing = "0.1"
 tracing-subscriber = {version = "0.3", features = ["env-filter"]}
 validator = {version = "0.15", features = ["derive"]}
 rdkafka = { version = "0.25", features = ["cmake-build"] }
+
+[dev-dependencies]
+pretty_assertions = "1.2"

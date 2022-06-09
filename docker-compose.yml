@@ -38,7 +38,7 @@ services:
   ingress:
     build: ./ingress
     environment:
-      - RUST_LOG=trace
+      - RUST_LOG=error
       - KAFKA_HOST=kafka
     ports:
       - 8000:8000
@@ -48,7 +48,7 @@ services:
   worker:
     build: ./worker
     environment:
-      - RUST_LOG=trace
+      - RUST_LOG=error
       - KAFKA_HOST=kafka
       - DB_HOST=db
     depends_on:
