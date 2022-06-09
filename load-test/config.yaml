@@ -2,8 +2,8 @@ version: 1
 config:
   target: "http://0.0.0.0:8000"
   phases:
-    - duration: 60
-      arrivalRate: 100
+    - duration: 20
+      arrivalRate: 1000
   processor: "./processor.js"
 scenarios:
   - flow:

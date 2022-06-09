@@ -42,6 +42,17 @@ npm install -s artillery@latest
 artillery run load-test.yaml
 ```
 
+Here's resourse usage for a run sending 20k requests over 60 seconds on WSL2(probably the most inefficient):
+
+```
+CONTAINER ID   NAME                          CPU %     MEM USAGE / LIMIT     MEM %     NET I/O           BLOCK I/O   PIDS
+08e0e50ea4b9   rust-axum-kafka-ingress-1     0.12%     101.8MiB / 12.44GiB   0.80%     21MB / 16.6MB     0B / 0B     17
+d3af0d3e5b91   rust-axum-kafka-worker-1      1.68%     15.89MiB / 12.44GiB   0.12%     12.8MB / 11.1MB   0B / 0B     17
+1448a81750a8   rust-axum-kafka-kafka-1       1.61%     424.3MiB / 12.44GiB   3.33%     10.4MB / 8.59MB   0B / 0B     86
+3c6f10adab04   rust-axum-kafka-db-1          0.88%     24.11MiB / 12.44GiB   0.19%     7.44MB / 6.32MB   0B / 0B     8
+46f32ebaa1be   rust-axum-kafka-zookeeper-1   0.07%     94.45MiB / 12.44GiB   0.74%     81.9kB / 65.2kB   0B / 0B     70
+```
+
 ## Why Apache Kafka?
 
 High performance(proven 100k RPS) and fault tolerance.
