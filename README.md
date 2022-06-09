@@ -7,14 +7,23 @@ The code is a happy-path spaghetti to test whether this is even going to work.
 
 ## Running
 
+Prerequisites: _Docker, Node.js_
+
 ```bash
 docker-compose up
+
+# install load testing tooling
+npm install -g artillery@latest
+
+# start blasting
+artillery run load-test.yaml
 ```
 
 ## Why Apache Kafka?
 
-- High performance with proven 100k RPS
-- Fault tolerance
+High performance(proven 100k RPS) and fault tolerance.
+Note: Fault tolerance is _not really_ explored in this project as it is not even using a Kafka cluster.
+
 
 ## Why Rust?
 
