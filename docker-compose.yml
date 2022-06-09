@@ -22,18 +22,6 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
 
-  ingress:
-    build: ./ingress
-    environment:
-      - RUST_LOG=debug
-    ports:
-      - 8000:8000
-
-  worker:
-    build: ./worker
-    environment:
-      - RUST_LOG=debug
-
   db:
     image: postgres:14.3-alpine
     restart: always
@@ -43,7 +31,24 @@ services:
     ports:
       - 5432:5432
     volumes:
+      # Initialize tables: https://blog.devgenius.io/tips-and-tricks-to-using-postgresql-docker-image-80047673c9a5
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
       - db:/var/lib/postgresql/data
+
+  ingress:
+    build: ./ingress
+    environment:
+      - RUST_LOG=error
+      - KAFKA_HOST=kafka
+    ports:
+      - 8000:8000
+
+  worker:
+    build: ./worker
+    environment:
+      - RUST_LOG=error
+      - KAFKA_HOST=kafka
+      - DB_HOST=database
 
 volumes:
   db:

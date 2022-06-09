@@ -7,13 +7,36 @@ The code is a happy-path spaghetti to test whether this is even going to work.
 
 ## Running
 
-Prerequisites: _Docker, Node.js_
+Prerequisites: _Docker_
 
 ```bash
 docker-compose up
+```
 
+## Testing
+
+For a simple test:
+
+```bash
+curl --location --request POST 'http://0.0.0.0:8000/api/v1/message' \
+    --header 'Content-Type: application/json' \
+    --data-raw '{
+        "ts": "1530228282",
+        "sender": "testy-test-service",
+        "message": {
+            "foo": "bar",
+            "baz": "bang"
+        },
+        "sent-from-ip": "1.2.3.4",
+        "priority": 2
+    }'
+```
+
+Prerequisites: _Node.js_
+
+```bash
 # install load testing tooling
-npm install -g artillery@latest
+npm install -s artillery@latest
 
 # start blasting
 artillery run load-test.yaml
@@ -33,4 +56,4 @@ The [ingres](./ingress/) service is using a relatively new [tokio-rs/axum](https
 
 ## Why Dockerfile is so complicated?
 
-It contains a build optimization from [Packaging a Rust web service using Docker](https://blog.logrocket.com/packaging-a-rust-web-service-using-docker/)
+It contains a build optimization from [Packaging a Rust web service using Docker.](https://blog.logrocket.com/packaging-a-rust-web-service-using-docker/)

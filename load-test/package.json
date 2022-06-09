@@ -1,0 +1,11 @@
+{
+  "private": true,
+  "scripts": {
+    "start": "artillery run config.yaml",
+    "dev": "DEBUG=http,http:response npm run start"
+  },
+  "dependencies": {
+    "@faker-js/faker": "7.2.0",
+    "artillery": "2.0.0-18"
+  }
+}

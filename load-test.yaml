@@ -1,5 +1,0 @@
-config:
-  target: "http://0.0.0.0:8000/"
-  phases:
-    - duration: 300
-      arrivalRate: 50
