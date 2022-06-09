@@ -68,3 +68,12 @@ The [ingres](./ingress/) service is using a relatively new [tokio-rs/axum](https
 ## Why Dockerfile is so complicated?
 
 It contains a build optimization from [Packaging a Rust web service using Docker.](https://blog.logrocket.com/packaging-a-rust-web-service-using-docker/)
+
+## TODO:
+
+- the [worker](./worker/) needs to batch inserts as it is getting pretty slow
+- run Kafka as a cluster
+- the [ingress](./ingress/) is okay CPU-wise, but suspiciously high memory usage(needs investigation)
+- add processing result output in the worker
+- run load tests on a better hardware on Linux
+- organize code better, add tests
